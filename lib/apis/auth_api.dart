@@ -10,9 +10,13 @@ import '../core/core.dart';
 
 final authAPIProvider = Provider((ref) {
   return AuthAPI(
-      account: ref.watch(
-    appwriteAccountProvider,
-  ));
+    account: ref.watch(
+      appwriteAccountProvider,
+    ),
+    client: ref.watch(
+      appwriteClientProvider,
+    ),
+  );
 });
 
 abstract class IAuthAPI {
@@ -31,10 +35,13 @@ abstract class IAuthAPI {
 
 class AuthAPI implements IAuthAPI {
   final Account _account;
+  final Client _client;
   String name = '';
   AuthAPI({
     required Account account,
-  }) : _account = account;
+    required Client client,
+  })  : _account = account,
+        _client = client;
 
   @override
   Future<models.User?> currentUserAccount() async {

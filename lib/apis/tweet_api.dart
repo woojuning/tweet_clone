@@ -18,6 +18,10 @@ abstract class ITweetAPI {
   Future<List<Document>> getTweets();
   Stream<RealtimeMessage> getLatestTweet();
   FutureEither<Document> likeTweet(Tweet tweet);
+  FutureEither<Document> updateReshareCount(Tweet tweet);
+  Future<List<Document>> getRepliesToTweet(Tweet tweet);
+  Future<Document> getTweetById(String id);
+  Future<List<Document>> getUserTweets(String uid);
 }
 
 class TweetAPI implements ITweetAPI {
@@ -80,5 +84,68 @@ class TweetAPI implements ITweetAPI {
     } catch (e, st) {
       return left(Failure(e.toString(), st));
     }
+  }
+
+  @override
+  FutureEither<Document> updateReshareCount(Tweet tweet) async {
+    try {
+      final document = await _db.updateDocument(
+          databaseId: AppWriteConstants.databaseId,
+          collectionId: AppWriteConstants.tweetCollection,
+          documentId: tweet.id,
+          data: {
+            'reshareCount': tweet.reshareCount,
+          });
+      return right(document);
+    } on AppwriteException catch (e, st) {
+      return left(Failure(e.message ?? 'Exception error occurs', st));
+    } catch (e, st) {
+      return left(Failure(e.toString(), st));
+    }
+  }
+
+  @override
+  Future<List<Document>> getRepliesToTweet(Tweet tweet) async {
+    final document = await _db.listDocuments(
+        databaseId: AppWriteConstants.databaseId,
+        collectionId: AppWriteConstants.tweetCollection,
+        queries: [
+          Query.equal('repliedTo', tweet.id),
+          // Query.orderDesc('tweetedAt'),
+        ]);
+    return document.documents;
+    //이미 여기서 tweet.id와 repliedTo가 같은 document만 list형태로 받아와 지는듯?
+  }
+
+  @override
+  Future<Document> getTweetById(String id) {
+    return _db.getDocument(
+        databaseId: AppWriteConstants.databaseId,
+        collectionId: AppWriteConstants.tweetCollection,
+        documentId: id);
+  }
+
+  @override
+  Future<List<Document>> getUserTweets(String uid) async {
+    final documents = await _db.listDocuments(
+        databaseId: AppWriteConstants.databaseId,
+        collectionId: AppWriteConstants.tweetCollection,
+        queries: [
+          Query.equal('uid', uid),
+        ]);
+    return documents.documents;
+  }
+
+  Future<List<Document>> getHasHashTagsTweet(String hastags) async {
+    final documents = await _db.listDocuments(
+      databaseId: AppWriteConstants.databaseId,
+      collectionId: AppWriteConstants.tweetCollection,
+      queries: [
+        Query.isNotNull('hashtags'),
+        Query.search('hashtags', hastags),
+      ],
+    );
+
+    return documents.documents;
   }
 }

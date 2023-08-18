@@ -1,5 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:twitter_clone/features/explore/view/explore_view.dart';
+import 'package:twitter_clone/features/notifications/view/notification_view.dart';
 import 'package:twitter_clone/features/tweet/widget/tweet_list.dart';
 
 import 'constants.dart';
@@ -18,8 +21,8 @@ class UIConstants {
 
   static List<Widget> bottomTabBarPages = [
     TweetList(),
-    Text('search'),
-    Text('notification'),
+    ExploreScreen(),
+    NotificationView(),
   ];
 
   static List<Widget> jooyoungList = [

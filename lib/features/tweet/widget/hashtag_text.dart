@@ -1,9 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
+import 'package:twitter_clone/features/tweet/views/hashtags_tweet_view.dart';
 import 'package:twitter_clone/theme/pallet.dart';
 
 class HashtagText extends StatelessWidget {
   final String text;
-  const HashtagText({super.key, required this.text});
+  HashtagText({super.key, required this.text});
+  String hashtag = '';
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +20,16 @@ class HashtagText extends StatelessWidget {
         if (element.startsWith('#')) {
           textSpans.add(
             TextSpan(
-              text: '$element ',
-              style: TextStyle(
-                color: Pallete.blueColor,
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+                text: '$element ',
+                style: TextStyle(
+                  color: Pallete.blueColor,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.push(context, HashTagsTweetView.route(element));
+                  }),
           );
         } else if (element.startsWith('www.') ||
             element.startsWith('https://')) {

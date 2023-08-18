@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/Common/common.dart';
 import 'package:twitter_clone/apis/auth_api.dart';
 import 'package:twitter_clone/apis/user_api.dart';
 import 'package:twitter_clone/core/utils.dart';
@@ -20,8 +21,8 @@ final authControllerProvider =
 final currentUserDetailsProvider = FutureProvider((ref) {
   //이거는 현재 유저의 정보를 얻기 위함
   final currentUserId = ref.watch(currentUserProvider).value!.$id;
-  final userDetails = ref.watch(userDetailsProvider(currentUserId)).value;
-  return userDetails;
+  final userDetails = ref.watch(userDetailsProvider(currentUserId));
+  return userDetails.value;
 });
 
 final userDetailsProvider = FutureProvider.family((ref, String uid) async {

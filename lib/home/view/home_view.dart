@@ -5,9 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:twitter_clone/constant/assets_constants.dart';
 import 'package:twitter_clone/constant/ui_constants.dart';
 import 'package:twitter_clone/features/tweet/views/create_tweet_view.dart';
+import 'package:twitter_clone/home/widget/side_drawer.dart';
 import 'package:twitter_clone/theme/pallet.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   static route() {
@@ -19,10 +20,10 @@ class HomeView extends StatefulWidget {
   }
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends ConsumerState<HomeView> {
   int _page = 0;
   final appBar = UIConstants.appBar();
 
@@ -36,20 +37,39 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Pallete.backgroundColor,
-      appBar: appBar,
+      appBar: _page == 0 ? appBar : null,
       body: IndexedStack(
         index: _page,
         children: UIConstants.bottomTabBarPages,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, CreateTweetScreen.route());
-        },
-        child: Icon(
-          Icons.add,
-          color: Pallete.whiteColor,
-          size: 28,
-        ),
+      drawer: SideDrawer(),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: null,
+            onPressed: () {},
+            child: Icon(
+              Icons.logout,
+              color: Pallete.whiteColor,
+              size: 28,
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          FloatingActionButton(
+            heroTag: null,
+            onPressed: () {
+              Navigator.push(context, CreateTweetScreen.route());
+            },
+            child: Icon(
+              Icons.add,
+              color: Pallete.whiteColor,
+              size: 28,
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: CupertinoTabBar(
         currentIndex: _page,
